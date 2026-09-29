@@ -224,7 +224,9 @@ function save(){ try{ localStorage.setItem("dci.form", JSON.stringify(F)); local
   catch(e){ toast("This phone is out of space — send what you have now, then add the rest"); return false; } }
 function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),Math.max(2400, Math.min(6000, m.length*55))); }
 const esc = s => String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const q = new URLSearchParams(location.search); const TRAVIS_SMS = q.get("sms")||"2086806488"; const TRAVIS_EMAIL = q.get("email")||"travisdeancounseling@gmail.com";
+const q = new URLSearchParams(location.search);
+// Travis's number and email are fixed in the page on purpose: a link can never point a client's answers anywhere else (DCI-12).
+const TRAVIS_SMS = "2086806488"; const TRAVIS_EMAIL = "travisdeancounseling@gmail.com";
 // the client code Travis's app puts in the link (4 letters/digits, random) — it lets his app match this form to the right client, and nothing else
 if(q.get("t")){ const t=q.get("t").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8); if(t && F.code!==t){ F.code=t; try{ localStorage.setItem("dci.form", JSON.stringify(F)); }catch(e){} } }
 // Travis's app can put what he already has into the link after the # — first and last name, date of birth, mobile, email. A #fragment stays on the phone; browsers never send it to any server. Only blanks are filled, never something the client typed.
@@ -234,7 +236,7 @@ try{ const h=new URLSearchParams(location.hash.replace(/^#/,"")); const map={fn:
 const HELP_SMS = `sms:${TRAVIS_SMS}?&body=${encodeURIComponent("Hi Travis, I have a question about the intake form: ")}`;
 // Optional progress note to Travis's own Google Sheet (the "p" in the link is the id of a script he deployed in his own Google account).
 // What goes: the client code, a step number and the screen's name. What never goes: any answer, any name.
-const TRK = (q.get("p")||"AKfycbyuDyCxPwuE7L1e-P3JQLU_wODFbDyHDKUW5kRE8P9Yozn4NQF0M3E3P8NQHvHphXI").replace(/[^A-Za-z0-9_-]/g,"").slice(0,120);   // AKfycbyuDyCxPwuE7L1e-P3JQLU_wODFbDyHDKUW5kRE8P9Yozn4NQF0M3E3P8NQHvHphXI = the id of Travis's deployed script, baked in at build time ("" until he finishes the deploy)
+const TRK = "AKfycbyuDyCxPwuE7L1e-P3JQLU_wODFbDyHDKUW5kRE8P9Yozn4NQF0M3E3P8NQHvHphXI";   // the id of Travis's own deployed script, baked in at build time — never taken from the link (DCI-12)
 function note(ev){ if(!TRK||!F.code) return; try{ fetch(`https://script.google.com/macros/s/${TRK}/exec`,{method:"POST",mode:"no-cors",keepalive:true,body:JSON.stringify({t:F.code,e:ev,s:step+1,n:ORDER.length,k:TITLES[ORDER[step]]||""})}).catch(()=>{}); }catch(e){} }
 let noted=-1;   // furthest step already noted, this visit only — nothing about it is stored on the phone
 function noteStep(){ if(step<=noted) return; noted=step; note("step"); }
