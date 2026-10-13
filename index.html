@@ -767,10 +767,10 @@ const S = {
     ${F._prefilled?`<div class="box privacy-box"><b>Travis already filled in what he had.</b> Check it and fix anything that's wrong.</div>`:""}
     ${txt("first","First name",{ac:"given-name"})}${txt("last","Last name",{ac:"family-name"})}${txt("dob","Date of Birth",{ph:"mm/dd/yyyy",im:"numeric",ac:"bday"})}
     ${F.code?`<div class="codechip">Client code ${esc(F.code)} ✓</div>`:txt("code","Client code from Travis's text",{ph:"4 letters, e.g. K7PQ",help:"Optional. It is in the text Travis sent you; it lets his app match this form to you."})}
-    <div class="box privacy-box"><b>${TRK?"Your answers stay on this phone.":"Nothing is uploaded anywhere."}</b> ${TRK?"The only thing that leaves early is which step you are on, tagged with your client code — so Travis can see how far along you are — never an answer and never your name. ":"Your answers stay on this phone while you fill this in. "}At the end you send them to Travis yourself, and then you can erase everything from this phone with one tap. If you forget, it erases itself two weeks after you send it.</div>
+    <div class="box privacy-box"><b>${TRK?"Your answers stay on this phone.":"Nothing is uploaded anywhere."}</b> ${TRK?"The only thing that leaves early is which step you are on, tagged with your client code — so Travis can see how far along you are — never an answer and never your name. ":"Your answers stay on this phone while you fill this in. "}At the end you send them to Travis yourself, and then you can erase everything from this phone with one tap. If you forget, it erases itself the next time this form is opened, once two weeks have passed.</div>
     <details class="acc faq" data-acc="faq" ${ACC.faq?"open":""}><summary>Questions before you start?</summary><dl>
       <dt>How long does it take?</dt><dd>About 20 minutes. Stop whenever you like — open the same link later and you are back where you left off.</dd>
-      <dt>Do I have to answer everything?</dt><dd>No. To send it you only need the three signatures and the photos — or a reason for any photo you can't take. Any history page you would rather talk about in person has a Skip button.</dd>
+      <dt>Do I have to answer everything?</dt><dd>No. To send it you only need to sign the forms and add the photos — or say why a photo has to wait. Any history page you would rather talk about in person has a Skip button.</dd>
       <dt>I don't have my insurance card with me.</dt><dd>On the Uploads page choose “I'll bring it to the first appointment”. Travis takes the picture there.</dd>
       <dt>Typing is hard on my phone.</dt><dd>Tap the microphone on your keyboard and talk. Tap Listen at the top and the page reads itself to you.</dd>
       <dt>What happens after I send it?</dt><dd>Travis gets one PDF with everything. You don't need to do anything else before your appointment.</dd>
@@ -921,7 +921,7 @@ const S = {
     <div class="opts"><button class="btn" id="sendBtn" ${block.length?"disabled":""}>Send to Travis</button></div>
     <div class="opts"><button class="btn ghost" id="textBtn" ${block.length?"disabled":""}>PDF won't send? Text the answers</button></div>
     <p class="privacy">"Send to Travis" makes one PDF with everything, including your signatures and photos, and opens your phone's share sheet — pick Messages to Travis. Your answers go to him and nowhere else.</p>
-    <div class="box privacy-box" style="margin-top:18px"><b>When you're done</b><br>Once you have sent it, erase everything from this phone. Travis has the copy you sent. (It erases itself two weeks after sending anyway.)
+    <div class="box privacy-box" style="margin-top:18px"><b>When you're done</b><br>Once you have sent it, erase everything from this phone. Travis has the copy you sent. (If you forget, it erases itself the next time this form is opened after two weeks.)
       <div class="opts" style="margin-top:12px"><button class="opt" id="eraseBtn">Erase my answers from this phone</button></div></div>
     ${helpLink()}`; }
 };
