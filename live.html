@@ -1,0 +1,97 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"></head><body><title>DCI live progress</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#2A6F97">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DCI progress">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#FBF8F3;--panel:#FFFFFF;--ink:#22272B;--muted:#5E6A72;--line:#DDD6CB;--accent:#2A6F97;--accent-ink:#FFFFFF;--soft:#E3EEF5;--done:#2E7D5B;--done-soft:#DFF1E7;--warn:#B4600F;--warn-soft:#FBEBDC;--fs:18px;--lh:1.5;--ls:0}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#151A1E;--panel:#1E252B;--ink:#EEF1F3;--muted:#A7B1B9;--line:#333E47;--accent:#6FB1DC;--accent-ink:#0E1A22;--soft:#1F3442;--done:#6CC79A;--done-soft:#1E3A2E;--warn:#E39A4A;--warn-soft:#3A2A1A}}
+:root[data-theme="dark"]{--bg:#151A1E;--panel:#1E252B;--ink:#EEF1F3;--muted:#A7B1B9;--line:#333E47;--accent:#6FB1DC;--accent-ink:#0E1A22;--soft:#1F3442;--done:#6CC79A;--done-soft:#1E3A2E;--warn:#E39A4A;--warn-soft:#3A2A1A}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--ink);font-family:Lexend,"Segoe UI",Helvetica,Arial,sans-serif;font-size:var(--fs);line-height:var(--lh);letter-spacing:var(--ls);-webkit-text-size-adjust:100%}
+body.bigger{--fs:22px}
+body.easy{--lh:1.9;--ls:.03em;word-spacing:.12em}
+header{position:sticky;top:0;background:var(--panel);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;z-index:2}
+.in{max-width:640px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.top b{font-size:17px}.top b span{color:var(--accent)}
+.util{display:flex;gap:6px}
+.util button,.btn{font:inherit;font-size:15px;font-weight:600;padding:10px 13px;min-height:44px;min-width:44px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.util button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--soft)}
+.btn{border-color:var(--accent);color:var(--accent)}
+main{padding:16px}
+h1{font-size:26px;line-height:1.2;margin:4px 0 6px;letter-spacing:-.02em}
+.lead{color:var(--muted);margin:0 0 16px;font-size:16px}
+.stat{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 16px}
+.stat div{flex:1;min-width:90px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.stat b{display:block;font-size:24px}
+.stat small{color:var(--muted);font-size:14px}
+.row{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:0 0 10px}
+.row .h{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:22px;font-weight:700;letter-spacing:.08em}
+.pill{font-size:14px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--soft);color:var(--accent);white-space:nowrap}
+.pill.sent{background:var(--done-soft);color:var(--done)}
+.pill.paused{background:var(--warn-soft);color:var(--warn)}
+.where{margin:6px 0 8px;font-size:16px}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.row.sent .bar i{background:var(--done)}
+.when{color:var(--muted);font-size:14px;margin-top:6px}
+.nm{font-size:18px;font-weight:600;margin-left:10px}
+.idc{display:flex;align-items:baseline;flex-wrap:wrap;min-width:0}
+.empty,.err{background:var(--panel);border:1px dashed var(--line);border-radius:16px;padding:18px;color:var(--muted)}
+.err{border-color:var(--warn);color:var(--ink)}
+.key{display:flex;gap:8px;margin-top:10px}
+.key input{flex:1;min-width:0;font:inherit;font-size:18px;padding:12px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+.foot{color:var(--muted);font-size:14px;margin:18px 0 30px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+<header><div class="in"><div class="top"><b><span>DCI</span> live progress</b><div class="util"><button id="easy" aria-pressed="false" title="Easier reading">Aa</button><button id="bigger" aria-pressed="false" title="Bigger text">A+</button></div></div></div></header>
+<main class="in" id="main"><h1>Where each client is</h1><p class="lead">Loading…</p></main>
+<script>
+const TRK = "AKfycbyuDyCxPwuE7L1e-P3JQLU_wODFbDyHDKUW5kRE8P9Yozn4NQF0M3E3P8NQHvHphXI";
+const $ = s => document.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let KEY = (new URLSearchParams(location.hash.slice(1)).get("k")||"").replace(/[^A-Za-z0-9]/g,"");
+try{ if(KEY) localStorage.setItem("dci.live.k", KEY); else KEY = localStorage.getItem("dci.live.k")||""; }catch(e){}
+// Names: the DCI Intake app adds "n=CODE:First L.;…" after the # when it opens this page. A #fragment never leaves this device.
+// They are kept on this device only (60 days), and the address is trimmed back to the key so a bookmark never holds names.
+let NAMES = {}; try{ NAMES = JSON.parse(localStorage.getItem("dci.live.names")||"{}")||{}; }catch(e){ NAMES = {}; }
+function takeNames(){ const raw = new URLSearchParams(location.hash.slice(1)).get("n"); if(!raw) return false; const now=Date.now();
+  raw.split(";").forEach(pair=>{ const i=pair.indexOf(":"); if(i<1) return; const code=pair.slice(0,i).toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8), nm=pair.slice(i+1).replace(/[<>]/g,"").trim().slice(0,40); if(code&&nm) NAMES[code]={n:nm,t:now}; });
+  for(const c in NAMES){ if(!NAMES[c] || now-(NAMES[c].t||0) > 60*86400000) delete NAMES[c]; }
+  try{ localStorage.setItem("dci.live.names", JSON.stringify(NAMES)); }catch(e){}
+  try{ history.replaceState(null, "", location.pathname + (KEY ? "#k="+KEY : "")); }catch(e){}
+  return true; }
+takeNames();
+["easy","bigger"].forEach(c=>{ try{ if(localStorage.getItem("dci.live."+c)==="1") document.body.classList.add(c); }catch(e){} const b=$("#"+c); b.setAttribute("aria-pressed", document.body.classList.contains(c)); b.onclick=()=>{ document.body.classList.toggle(c); const on=document.body.classList.contains(c); b.setAttribute("aria-pressed", on); try{ localStorage.setItem("dci.live."+c, on?"1":""); }catch(e){} }; });
+const ago = t => { const m=Math.round((Date.now()-new Date(t).getTime())/60000); if(!isFinite(m)) return ""; if(m<1) return "just now"; if(m<60) return m+" min ago"; const h=Math.round(m/60); if(h<24) return h+" hr ago"; const d=Math.round(h/24); return d+" day"+(d>1?"s":"")+" ago"; };
+const clock = t => new Date(t).toLocaleString([], {weekday:"short", hour:"numeric", minute:"2-digit"});
+function keyBox(msg){ return `<div class="err"><b>${esc(msg)}</b><br>Open this page from <b>Live progress</b> in your DCI Intake app, or paste the read key once:<div class="key"><input id="k" placeholder="read key" autocomplete="off"><button class="btn" id="kb">Save</button></div></div>`; }
+function wireKey(){ const b=$("#kb"); if(b) b.onclick=()=>{ KEY=($("#k").value||"").replace(/[^A-Za-z0-9]/g,""); try{ localStorage.setItem("dci.live.k", KEY); }catch(e){} load(); }; }
+async function load(){
+  const main=$("#main");
+  if(!KEY){ main.innerHTML=`<h1>Where each client is</h1>${keyBox("No read key yet.")}`; wireKey(); return; }
+  let j=null;
+  try{ const r=await fetch(`https://script.google.com/macros/s/${TRK}/exec?key=${encodeURIComponent(KEY)}&_=${Date.now()}`, {cache:"no-store"}); j=await r.json(); }
+  catch(e){ main.innerHTML=`<h1>Where each client is</h1><div class="err"><b>Can't reach your tracker right now.</b> Check the connection and tap Refresh.</div><p class="foot"><button class="btn" id="rf">Refresh</button></p>`; $("#rf").onclick=load; return; }
+  if(!j || !j.ok){ main.innerHTML=`<h1>Where each client is</h1>${keyBox(j&&j.err==="key"?"That read key doesn't match your tracker.":"The tracker answered with an error.")}`; wireKey(); return; }
+  const cutoff=Date.now()-30*86400000;
+  const rows=Object.entries(j.clients||{}).map(([code,c])=>({code, ...c, last:new Date(c.sentAt||c.at||0).getTime()})).filter(r=>r.last>cutoff);
+  const active=rows.filter(r=>!r.sent).sort((a,b)=>b.last-a.last), done=rows.filter(r=>r.sent).sort((a,b)=>b.last-a.last);
+  const card=r=>{ const of=r.of||16, st=Math.min(r.step||1, of), pct=r.sent?100:Math.round(100*st/of), idle=!r.sent && (Date.now()-new Date(r.at).getTime())>30*60000;
+    const pill = r.sent ? `<span class="pill sent">Sent ✓</span>` : idle ? `<span class="pill paused">Paused</span>` : `<span class="pill">Filling in</span>`;
+    const where = r.sent ? `Sent the form ${esc(clock(r.sentAt))}` : `Step ${st} of ${of}${r.screen?" · "+esc(r.screen):""}`;
+    return `<div class="row${r.sent?" sent":""}"><div class="h"><span class="idc"><span class="code">${esc(r.code)}</span>${NAMES[r.code]?`<span class="nm">${esc(NAMES[r.code].n)}</span>`:""}</span>${pill}</div><div class="where">${where}</div><div class="bar"><i style="width:${pct}%"></i></div><div class="when">${r.sent?"":"Last seen "+esc(ago(r.at))}</div></div>`; };
+  main.innerHTML = `<h1>Where each client is</h1><p class="lead">Updated ${esc(clock(Date.now()))} · refreshes every 30 seconds</p>
+    <div class="stat"><div><b>${active.length}</b><small>filling in now</small></div><div><b>${done.length}</b><small>sent (30 days)</small></div></div>
+    ${rows.length?active.map(card).join("")+done.map(card).join(""):`<div class="empty">No client has opened a form in the last 30 days.</div>`}
+    <p class="foot">Your tracker only ever sees codes. Names come from your DCI Intake app — open this page with its <b>Live progress</b> button — and stay on this device. You also get a text when a client opens their form and when they send it.<br><button class="btn" id="rf" style="margin-top:10px">Refresh now</button></p>`;
+  $("#rf").onclick=load; }
+window.addEventListener("hashchange", ()=>{ const k=(new URLSearchParams(location.hash.slice(1)).get("k")||"").replace(/[^A-Za-z0-9]/g,""); if(k){ KEY=k; try{ localStorage.setItem("dci.live.k", KEY); }catch(e){} } if(takeNames() || k) load(); });
+load(); setInterval(()=>{ if(document.visibilityState==="visible") load(); }, 30000);
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible") load(); });
+</script>
+</body></html>
