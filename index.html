@@ -634,7 +634,7 @@ function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show");
 const esc = s => String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const q = new URLSearchParams(location.search);
 // Travis's number and email are fixed in the page on purpose: a link can never point a client's answers anywhere else (DCI-12).
-const TRAVIS_SMS = "2086806488"; const TRAVIS_EMAIL = "travisdeancounseling@gmail.com";
+const TRAVIS_SMS = "2086806488";
 // the client code Travis's app puts in the link (4 letters/digits, random) — it lets his app match this form to the right client, and nothing else
 if(q.get("t")){ const t=q.get("t").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8); if(t && F.code!==t){ F.code=t; try{ localStorage.setItem("dci.form", JSON.stringify(F)); }catch(e){} } }
 // Travis's app can put what he already has into the link after the # — first and last name, date of birth, mobile, email. A #fragment stays on the phone; browsers never send it to any server. Only blanks are filled, never something the client typed.
@@ -774,7 +774,7 @@ const S = {
     ${txt("home_phone","Home Phone",{type:"tel",im:"tel",ac:"home tel"})}${txt("work_phone","Work Phone",{type:"tel",im:"tel",ac:"work tel"})}${txt("phone","Mobile Phone",{type:"tel",im:"tel",ac:"mobile tel"})}
     ${txt("email","Primary Email",{type:"email",im:"email",ac:"email",req:true})}${txt("email2","Alternate Email",{type:"email",im:"email",ac:"email"})}
     ${sel("commpref","Preferred Communication Method",COMMPREF)}
-    <div class="box"><b>Appointment reminders come by text message</b> to your mobile phone. Other ways to reach Travis, any time: call or text <a href="tel:${TRAVIS_SMS}">${fmtPhone(TRAVIS_SMS)}</a>, email <a href="mailto:${esc(TRAVIS_EMAIL)}">${esc(TRAVIS_EMAIL)}</a>, or a message through the patient portal once your chart is open.</div>
+    <div class="box"><b>Appointment reminders come by text message</b> to your mobile phone. To reach Travis any time, call or text <a href="tel:${TRAVIS_SMS}">${fmtPhone(TRAVIS_SMS)}</a>.</div>
     ${check("sms_rem","Yes, text my appointment reminders to my mobile phone")}`,
   about: () => `<h1>About you</h1><p class="lead">These are the questions Travis's records system asks. Answering here means nobody asks you again.</p>
     ${sel("marital","Marital Status",MARITAL)}
